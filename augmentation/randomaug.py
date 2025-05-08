@@ -1,21 +1,12 @@
+## took from: https://github.com/DeepVoltaire/AutoAugment   
+## todo: point to facial emotion dataset
+
 from PIL import Image, ImageEnhance, ImageOps
 import numpy as np
 import random
 
 
 class ImageNetPolicy(object):
-    """ Randomly choose one of the best 24 Sub-policies on ImageNet.
-
-        Example:
-        >>> policy = ImageNetPolicy()
-        >>> transformed = policy(image)
-
-        Example as a PyTorch Transform:
-        >>> transform=transforms.Compose([
-        >>>     transforms.Resize(256),
-        >>>     ImageNetPolicy(),
-        >>>     transforms.ToTensor()])
-    """
     def __init__(self, fillcolor=(128, 128, 128)):
         self.policies = [
             SubPolicy(0.4, "posterize", 8, 0.6, "rotate", 9, fillcolor),
@@ -59,18 +50,6 @@ class ImageNetPolicy(object):
 
 
 class CIFAR10Policy(object):
-    """ Randomly choose one of the best 25 Sub-policies on CIFAR10.
-
-        Example:
-        >>> policy = CIFAR10Policy()
-        >>> transformed = policy(image)
-
-        Example as a PyTorch Transform:
-        >>> transform=transforms.Compose([
-        >>>     transforms.Resize(256),
-        >>>     CIFAR10Policy(),
-        >>>     transforms.ToTensor()])
-    """
     def __init__(self, fillcolor=(128, 128, 128)):
         self.policies = [
             SubPolicy(0.1, "invert", 7, 0.2, "contrast", 6, fillcolor),
@@ -114,18 +93,6 @@ class CIFAR10Policy(object):
 
 
 class SVHNPolicy(object):
-    """ Randomly choose one of the best 25 Sub-policies on SVHN.
-
-        Example:
-        >>> policy = SVHNPolicy()
-        >>> transformed = policy(image)
-
-        Example as a PyTorch Transform:
-        >>> transform=transforms.Compose([
-        >>>     transforms.Resize(256),
-        >>>     SVHNPolicy(),
-        >>>     transforms.ToTensor()])
-    """
     def __init__(self, fillcolor=(128, 128, 128)):
         self.policies = [
             SubPolicy(0.9, "shearX", 4, 0.2, "invert", 3, fillcolor),
@@ -187,7 +154,6 @@ class SubPolicy(object):
             "invert": [0] * 10
         }
 
-        # from https://stackoverflow.com/questions/5252170/specify-image-filling-color-when-rotating-in-python-with-pil-and-setting-expand
         def rotate_with_fill(img, magnitude):
             rot = img.convert("RGBA").rotate(magnitude)
             return Image.composite(rot, Image.new("RGBA", rot.size, (128,) * 4), rot).convert(img.mode)
